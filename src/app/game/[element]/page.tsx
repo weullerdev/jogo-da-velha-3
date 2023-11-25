@@ -22,18 +22,10 @@ export default function Game() {
 
   const ENDPOINT = 'http://localhost:3333'
 
-  const createGame = () => {
-    const game = [...Array(9)].map(i => ({ value: null }))
-    setSquareGame(game)
-    setTurn('x')
-  }
-
   const win = (element: string) => {
     setTimeout(() => {
       alert(`${element} ganhou`)
     }, 200)
-
-    // createGame()
   }
 
   const handleClick = (i: number) => {
@@ -55,9 +47,6 @@ export default function Game() {
       value: turn,
       date: new Date(),
     }
-
-    setTurn(turn === 'x' ? 'o' : 'x')
-    // setSquareGame([...squareGame])
 
     socket.emit('round', squareGame)
   }
