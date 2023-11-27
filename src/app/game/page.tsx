@@ -8,6 +8,7 @@ import Image from 'next/image';
 
 import PLAYER_X from '@/assets/playerX.svg'
 import PLAYER_O from '@/assets/playerO.svg'
+import { useSocket } from '@/hooks/socket';
 
 interface SquareGame {
   value: 'x' | 'o' | null
@@ -17,8 +18,9 @@ interface SquareGame {
 let socket: Socket;
 
 export default function Game() {
+  const { turn } = useSocket()
   const [squareGame, setSquareGame] = useState<SquareGame[]>([])
-  const [turn, setTurn] = useState<'x' | 'o'>('x')
+  const [turnGame, setTurnGame] = useState<'x' | 'o'>('x')
 
   const ENDPOINT = 'http://localhost:3333'
 
@@ -26,16 +28,18 @@ export default function Game() {
     setTimeout(() => {
       alert(`${element} ganhou`)
     }, 200)
+    // console.log(`${element} win`)
+    // socket.emit('reset')
   }
 
   const handleClick = (i: number) => {
-    console.log(squareGame);
+    if(turnGame !== turn) return
     
     if (squareGame[i].value !== null) return
     const playerTurn = squareGame.filter(v => v.value === turn).sort((a, b) => new Date(a.date!)?.getTime()! - new Date(b.date!)?.getTime()!)
 
     if (playerTurn.length === 3) {
-      const index = squareGame.findIndex(v => v.date?.getTime()! === playerTurn[0].date?.getTime()!)
+      const index = squareGame.findIndex(v => new Date(v.date!)?.getTime()! === new Date(playerTurn[0].date!)?.getTime()!)
 
       squareGame[index] = {
         value: null,
@@ -44,15 +48,15 @@ export default function Game() {
     }
 
     squareGame[i] = {
-      value: turn,
+      value: turnGame,
       date: new Date(),
     }
 
-    socket.emit('round', squareGame)
+    socket.emit('round', squareGame, turnGame)
   }
 
-  const winConditions = () => {
-    const currentTurn = turn === 'x' ? 'o' : 'x'
+  const winConditions = (squareGame: SquareGame[]) => {
+    const currentTurn = turnGame === 'x' ? 'o' : 'x'
     // Verificar linhas
     for (let i = 0; i < 7; i += 3) {
       if (squareGame[i].value === currentTurn && squareGame[i + 1].value === currentTurn && squareGame[i + 2].value === currentTurn) {
@@ -82,22 +86,22 @@ export default function Game() {
   }, [])
 
   useEffect(() => {
-    socket.on('updateGame', (game) => setSquareGame(game.value))
+    socket.on('updateGame', (game) => {
+      setSquareGame(game.value) 
+      setTurnGame(game.turn)
+      if(game.value.length === 9){
+        winConditions(game.value)
+      }
+    })
     socket.on('winner', (element) => win(element))
   })
-
-  useEffect(() => {
-    if (squareGame?.length === 9) {
-      winConditions()
-    }
-  }, [squareGame])
 
   return (
     <div className='w-screen h-screen flex flex-col justify-center items-center gap-4'>
       <h1 className='text-white'>Jogo da Velha 3</h1>
       <div className='flex justify-between w-[calc(128px*3+64px)]'>
         <div>X O</div>
-        <div>Turno {turn.toUpperCase()}</div>
+        <div>Turno {turnGame.toUpperCase()}</div>
         <button onClick={() => socket.emit('reset')}>Recomeçar</button>
       </div>
       <div className='grid grid-cols-3 w-[calc(128px*3+64px)] gap-y-6 gap-x-8'>

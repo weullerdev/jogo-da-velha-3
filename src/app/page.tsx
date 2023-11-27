@@ -3,20 +3,18 @@
 import { useSocket } from '@/hooks/socket';
 import { useEffect, useState } from 'react'
 
-import io, { Socket } from 'socket.io-client';
-
 import { useRouter } from 'next/navigation'
 
 export default function Home() {
   const [code, setCode] = useState('');
 
-  const { socket } = useSocket()
+  const { socket, setTurn } = useSocket()
   const { push } = useRouter()
 
   const createGame = () => {
     socket.emit('createGame', 'x')
-
-    push('/game/x')
+    setTurn('x')
+    push('/game')
   }
 
   const joinGame = () => {
@@ -25,7 +23,10 @@ export default function Home() {
 
   useEffect(() => {
     socket.on('errorCode', () => console.log('errou'))
-    socket.on('joinedGame', (element) => push('/game/' + element))
+    socket.on('joinedGame', (element) => {
+      setTurn(element)
+      push('/game')} 
+    )
   })
 
   return (

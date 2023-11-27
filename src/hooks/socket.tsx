@@ -5,6 +5,8 @@ import io, { Socket } from 'socket.io-client';
 
 interface SocketContextData {
   socket: Socket
+  turn: string
+  setTurn: (turn: string) => void
 }
 
 interface SocketProviderProps {
@@ -15,10 +17,11 @@ interface SocketProviderProps {
 const SocketContext = createContext({} as SocketContextData)
 
 export function SocketProvider({ children, connection }: SocketProviderProps) {
+  const [turn, setTurn] = useState('')
   const socket = connection
 
   return (
-    <SocketContext.Provider value={{ socket }}>
+    <SocketContext.Provider value={{ socket, turn, setTurn }}>
       {children}
     </SocketContext.Provider>
   )
