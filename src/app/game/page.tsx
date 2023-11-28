@@ -101,7 +101,7 @@ export default function Game() {
       <h1 className='text-white'>Jogo da Velha 3</h1>
       <div className='flex justify-between w-[calc(128px*3+64px)]'>
         <div>X O</div>
-        <div>Turno {turnGame.toUpperCase()}</div>
+        <div>Turno {turnGame?.toUpperCase()}</div>
         <button onClick={() => socket.emit('reset')}>Recomeçar</button>
       </div>
       <div className='grid grid-cols-3 w-[calc(128px*3+64px)] gap-y-6 gap-x-8'>
