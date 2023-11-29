@@ -15,13 +15,27 @@ interface SquareGame {
   date?: Date;
 }
 
+interface SquaresWin {
+  squareOne?: number | null
+  squareTwo?: number | null
+  squareThree?: number | null
+}
+
+interface Win {
+  win: boolean
+  squares?: SquaresWin;
+}
+
 let socket: Socket;
 
 export default function Game() {
   const { turn } = useSocket()
   const [squareGame, setSquareGame] = useState<SquareGame[]>([])
   const [turnGame, setTurnGame] = useState<'x' | 'o'>('x')
-  const [playerWin, setPlayerWin] = useState(false)
+  const [playerWin, setPlayerWin] = useState<Win>({
+    win: false,
+    squares: {}
+  })
 
   const ENDPOINT = 'http://localhost:3333'
 
@@ -61,23 +75,51 @@ export default function Game() {
     // Verificar linhas
     for (let i = 0; i < 7; i += 3) {
       if (squareGame[i].value === currentTurn && squareGame[i + 1].value === currentTurn && squareGame[i + 2].value === currentTurn) {
-        setPlayerWin(true)
+        setPlayerWin({
+          win: true,
+          squares: { 
+            squareOne: i, 
+            squareTwo: i + 1, 
+            squareThree: i + 2, 
+          }
+        })
       }
     }
 
     // Verificar colunas
     for (let i = 0; i < 3; i++) {
       if (squareGame[i].value === currentTurn && squareGame[i + 3].value === currentTurn && squareGame[i + 6].value === currentTurn) {
-        setPlayerWin(true)
+        setPlayerWin({
+          win: true,
+          squares: { 
+            squareOne: i, 
+            squareTwo: i + 3, 
+            squareThree: i + 6, 
+          }
+        })
       }
     }
 
     // Verificar diagonais
     if (squareGame[0].value === currentTurn && squareGame[4].value === currentTurn && squareGame[8].value === currentTurn) {
-      setPlayerWin(true)
+      setPlayerWin({
+        win: true,
+        squares: { 
+          squareOne: 0, 
+          squareTwo: 4, 
+          squareThree: 8, 
+        }
+      })
     }
     if (squareGame[2].value === currentTurn && squareGame[4].value === currentTurn && squareGame[6].value === currentTurn) {
-      setPlayerWin(true)
+      setPlayerWin({
+        win: true,
+        squares: { 
+          squareOne: 2, 
+          squareTwo: 4, 
+          squareThree: 6, 
+        }
+      })
     }
   }
 
@@ -87,12 +129,19 @@ export default function Game() {
   }, [])
 
   useEffect(() => {
-    if(playerWin){
+    if(playerWin.win){
       win(turnGame === 'o' ? 'x' : 'o')
       socket.emit('createGame')
-      setPlayerWin(false)
+      setPlayerWin({
+        win: false,
+        squares: { 
+          squareOne: null,
+          squareTwo: null, 
+          squareThree: null, 
+        }
+      })
     }
-  },[playerWin])
+  },[playerWin.win])
 
   useEffect(() => {
     socket.on('updateGame', (game) => {

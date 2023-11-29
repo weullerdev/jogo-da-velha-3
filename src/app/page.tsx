@@ -36,7 +36,7 @@ export default function Home() {
   return (
       
     <div className='w-screen h-screen flex flex-col justify-center items-center overflow-hidden'>
-      <div className='absolute w-full h-screen scroll-hidden z-0'>
+      <div className='absolute w-full h-screen scroll-hidden z-0 overflow-hidden'>
         <div className="animation-circle-cross"><Image src={PLAYER_X} alt='' width={40} height={40} /></div>
         <div className="animation-circle-cross"><Image src={PLAYER_O} alt='' width={40} height={40} /></div>
         <div className="animation-circle-cross"><Image src={PLAYER_X} alt='' width={40} height={40} /></div>
@@ -45,8 +45,8 @@ export default function Home() {
         <div className="animation-circle-cross"><Image src={PLAYER_O} alt='' width={40} height={40} /></div>
         <div className="animation-circle-cross"><Image src={PLAYER_X} alt='' width={40} height={40} /></div>
         <div className="animation-circle-cross"><Image src={PLAYER_O} alt='' width={40} height={40} /></div>
-      </div>
-      <div className='login w-96 h-96 flex flex-col items-center justify-evenly p-4 bg-[#2c4a58] z-10'>
+      </div> 
+      <div className='login w-96 h-96 flex flex-col items-center justify-evenly p-4 bg-[#2c4a58] z-10 overflow-hidden'>
         <h1 className='text-2xl text-white'>JOGO DA VELHA 3</h1>
         <div className='w-screen flex justify-center gap-8'>
           <Image src={PLAYER_X} alt='' width={40} height={40} />
