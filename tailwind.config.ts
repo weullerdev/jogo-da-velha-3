@@ -15,6 +15,15 @@ const config: Config = {
         'gradient-conic':
           'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
       },
+      animation: {
+        'emerge': 'emerge 0.4s ease-in-out',
+      },
+      keyframes: {
+        emerge: { 
+          '0%': { transform: 'scale(0)' },
+          '100%': { transform: 'scale(1)' },
+        }
+      }
     },
   },
   plugins: [],

@@ -185,9 +185,9 @@ export default function Game() {
           <div key={i} onClick={() => handleClick(i)} className='flex items-center justify-center w-32 h-32 rounded-lg bg-gray-600 shadow-lg cursor-pointer'>
             <div className='flex items-center justify-center text-8xl text-white'>
               {x.value === 'x' ?
-                <Image src={PLAYER_X} alt='' width={60} height={60} />
+                <Image src={PLAYER_X} alt='' width={60} height={60} className='animate-emerge' />
                 : x.value === 'o' ?
-                  <Image src={PLAYER_O} alt='' width={60} height={60} />
+                  <Image src={PLAYER_O} alt='' width={60} height={60} className='animate-emerge' />
                   : null
               }
             </div>
