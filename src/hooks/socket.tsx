@@ -7,6 +7,8 @@ interface SocketContextData {
   socket: Socket
   turn: string
   setTurn: (turn: string) => void
+  code: string
+  setCode: (code: string) => void
 }
 
 interface SocketProviderProps {
@@ -18,10 +20,11 @@ const SocketContext = createContext({} as SocketContextData)
 
 export function SocketProvider({ children, connection }: SocketProviderProps) {
   const [turn, setTurn] = useState('')
+  const [code, setCode] = useState('')
   const socket = connection
 
   return (
-    <SocketContext.Provider value={{ socket, turn, setTurn }}>
+    <SocketContext.Provider value={{ socket, turn, setTurn, code, setCode }}>
       {children}
     </SocketContext.Provider>
   )

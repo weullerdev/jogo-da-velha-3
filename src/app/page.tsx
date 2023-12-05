@@ -10,23 +10,24 @@ import PLAYER_O from '@/assets/playerO.svg'
 import Image from 'next/image';
 
 export default function Home() {
-  const [code, setCode] = useState('');
-
+  const [verifyCode, serVerifyCode] = useState('')
   const { socket, setTurn } = useSocket()
   const { push } = useRouter()
 
   const createGame = () => {
     socket.emit('createGame', 'x')
+    socket.on('getCode', (createdCode: string) => console.log(createdCode))
     setTurn('x')
     push('/game')
   }
 
   const joinGame = () => {
-    socket.emit('joinGame', code)
+    socket.emit('joinGame', verifyCode)
   }
 
   useEffect(() => {
     socket.on('errorCode', () => console.log('errou'))
+
     socket.on('joinedGame', (element: string) => {
       setTurn(element)
       push('/game')} 
@@ -64,7 +65,7 @@ export default function Home() {
             type="text" 
             autoFocus
             placeholder='Código' 
-            onChange={(e) => setCode(e.target.value)} 
+            onChange={(e) => serVerifyCode(e.target.value)} 
           />
           <button 
             className='w-64 h-10 rounded-2xl text-lg text-white bg-[#f2b237] hover:bg-[#bf8c2b] transition ease-in-out duration-300'
